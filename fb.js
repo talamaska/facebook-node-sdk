@@ -275,7 +275,13 @@
             if(method === 'post') {
                 body = '';
                 if(params.access_token) {
-                    uri += '?access_token=' + encodeURIComponent(params.access_token);
+                    if((uri.indexOf("?") !== -1)) {
+                        uri += '&';
+                    }
+                    else {
+                        uri += '?';
+                    }
+                    uri += 'access_token=' + encodeURIComponent(params.access_token);
                     delete params['access_token'];
                     
                     if(params.appsecret_proof) {
@@ -298,7 +304,12 @@
                     body = body.substring(0, body.length - 1);
                 }
             } else {
-                uri += '?';
+                if((uri.indexOf("?") !== -1)) {
+                    uri += '&';
+                }
+                else {
+                    uri += '?';
+                }
                 for(key in params) {
                     value = params[key];
                     if(typeof value !== 'string') {
