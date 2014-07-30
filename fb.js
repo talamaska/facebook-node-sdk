@@ -246,7 +246,8 @@
                 , key
                 , value
                 , requestOptions
-                , isOAuthRequest;
+                , isOAuthRequest
+                , pool;
 
             cb = cb || function() {};
             if(!params.access_token) {
@@ -319,12 +320,14 @@
                 }
                 uri = uri.substring(0, uri.length -1);
             };
-
+            
+            pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                   method: method
                 , encoding: 'binary'
                 , uri: uri
                 , body: body
+                , pool: pool
             };
             if(options('proxy')) {
                 requestOptions['proxy'] = options('proxy');
@@ -531,7 +534,7 @@
                         case 'accessToken':
                             opts.appSecretProof =
                                 (opts.appSecret && opts.accessToken) ?
-                                getAppSecretProof(opts[key], opts.appSecret) :
+                                getAppSecretProof(opts.accessToken, opts.appSecret) :
                                 null;
                             break;
                     }
